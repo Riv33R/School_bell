@@ -145,6 +145,7 @@ HTML_TEMPLATE = """
         <table>
             <thead>
                 <tr>
+                    <th>№</th> <!-- Добавлен столбец для порядкового номера -->
                     <th>Начало урока</th>
                     <th>Конец урока</th>
                     <th>Аудио файл</th>
@@ -154,6 +155,7 @@ HTML_TEMPLATE = """
             <tbody>
                 {% for time_slot in schedule %}
                 <tr>
+                    <td>{{ loop.index }}</td> <!-- Вывод порядкового номера -->
                     <td>{{ time_slot['lesson_start'] }}</td>
                     <td>{{ time_slot['lesson_end'] }}</td>
                     <td>{{ time_slot.get('audio_file_path', 'Не указан') }}</td>
@@ -177,13 +179,15 @@ HTML_TEMPLATE = """
             </tbody>
         </table>
         <h2>Добавить время звонка</h2>
-        <form method="post" enctype="multipart/form-data">
-            <input type="time" name="lesson_start" required> Начало урока
-            <input type="time" name="lesson_end" required> Конец урока
-            <input type="file" name="audio_file" accept=".mp3,.wav,.ogg" required> Аудио файл
-            <button type="submit" class="btn">Добавить и загрузить</button>
-        </form>
-    </div>
+            <button>
+                <form method="post" enctype="multipart/form-data">
+                <input type="time" name="lesson_start" required> Начало урока
+                <input type="time" name="lesson_end" required> Конец урока
+                <input type="file" name="audio_file" accept=".mp3,.wav,.ogg" required> Аудио файл
+                <button type="submit" class="btn">Добавить и загрузить</button>
+                </form>
+            </button>
+        </div>
     <script>
         function updateClock() {
             const now = new Date();
