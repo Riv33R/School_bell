@@ -222,7 +222,7 @@ def schedule_page():
         audio_file = request.files.get('audio_file')
         
         if lesson_start and lesson_end and audio_file and allowed_file(audio_file.filename):
-            filename = secure_filename(audio_file.filename)
+            filename = secure_filename(audio_file.filename) # type: ignore
             audio_file_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
             audio_file.save(audio_file_path)
             
@@ -253,7 +253,7 @@ def replace_audio(index):
             if old_audio_path and os.path.exists(old_audio_path):
                 os.remove(old_audio_path)
 
-            filename = secure_filename(audio_file.filename)
+            filename = secure_filename(audio_file.filename) # type: ignore
             new_audio_file_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
             audio_file.save(new_audio_file_path)
 
