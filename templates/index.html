@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Расписание школьных звонков</title>
+</head>
+<body>
+    <div class="container">
+        <h1>Расписание школьных звонков</h1>
+        <div id="clock" style="text-align:center; font-size:24px; margin-bottom: 20px;"></div>
+        <table>
+            <thead>
+                <tr>
+                    <th>№</th> <!-- Добавлен столбец для порядкового номера -->
+                    <th>Начало урока</th>
+                    <th>Конец урока</th>
+                    <th>Аудио файл</th>
+                    <th>Действие</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for time_slot in schedule %}
+                <tr>
+                    <td>{{ loop.index }}</td> <!-- Вывод порядкового номера -->
+                    <td>{{ time_slot['lesson_start'] }}</td>
+                    <td>{{ time_slot['lesson_end'] }}</td>
+                    <td>{{ time_slot.get('audio_file_path', 'Не указан') }}</td>
+                    <td>
+                        <div class="dropdown">
+                            <button class="dropbtn">Действия</button>
+                                <div class="dropdown-content">
+                                    <form method="post" action="/delete/{{ loop.index0 }}" style="margin-bottom: 0;">
+                                    <button type="submit" class="btn btn-small btn-danger">Удалить</button>
+                                </form>
+                                    <form method="post" action="/replace_audio/{{ loop.index0 }}" enctype="multipart/form-data" style="margin-bottom: 0;">
+                                    <input type="file" name="audio_file" accept=".mp3,.wav,.ogg" required>
+                                    <button type="submit" class="btn btn-small">Заменить аудио</button>
+                                </form>
+                                    <form method="post" action="/edit_time/{{ loop.index0 }}" style="margin-bottom: 0;">
+                                    <input type="time" name="lesson_start" value="{{ time_slot['lesson_start'] }}" required>
+                                    <input type="time" name="lesson_end" value="{{ time_slot['lesson_end'] }}" required>
+                                    <button type="submit" class="btn btn-small">Редактировать время</button>
+                                </form>
+                                    <form method="post" action="/move_up/{{ loop.index0 }}" style="display: inline;">
+                                    <button type="submit" class="btn btn-small">&#8679; Вверх</button>
+                                </form>
+                                    <form method="post" action="/move_down/{{ loop.index0 }}" style="display: inline;">
+                                    <button type="submit" class="btn btn-small">&#8681; Вниз</button>
+                                </form>
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        <h2>Добавить время звонка</h2>
+        <form method="post" enctype="multipart/form-data">
+            <input type="time" name="lesson_start" required> Начало урока
+            <input type="time" name="lesson_end" required> Конец урока
+            <input type="file" name="audio_file" accept=".mp3,.wav,.ogg" required> Аудио файл
+            <button type="submit" class="btn">Добавить и загрузить</button>
+        </form>
+    </div>
+    <script>
+        function updateClock() {
+            const now = new Date();
+            document.getElementById('clock').innerHTML = now.toLocaleTimeString();
+        }
+        setInterval(updateClock, 1000);
+    </script>
+</body>
+</html>
