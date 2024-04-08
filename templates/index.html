@@ -15,7 +15,7 @@
         <table>
             <thead>
                 <tr>
-                    <th>№</th> 
+                    <th>№</th>
                     <th>Начало урока</th>
                     <th>Конец урока</th>
                     <th>Аудио файл</th>
@@ -42,8 +42,10 @@
                                     <button type="submit" class="btn-small">Заменить аудио</button>
                                 </form>
                                 <form method="post" action="/edit_time/{{ loop.index0 }}" style="margin-bottom: 0;">
-                                    <input type="time" class="btn-small" name="lesson_start" value="{{ time_slot['lesson_start'] }}" required>
-                                    <input type="time" class="btn-small" name="lesson_end" value="{{ time_slot['lesson_end'] }}" required>
+                                    <input type="time" class="btn-small" name="lesson_start"
+                                        value="{{ time_slot['lesson_start'] }}" required>
+                                    <input type="time" class="btn-small" name="lesson_end"
+                                        value="{{ time_slot['lesson_end'] }}" required>
                                     <button type="submit" class="btn-small">Заменить время</button>
                                 </form>
                                 <form method="post" action="/move_up/{{ loop.index0 }}" style="display: inline;">
