@@ -34,24 +34,23 @@
                             <button class="dropbtn">Меню</button>
                             <div class="dropdown-content">
                                 <form method="post" action="/delete/{{ loop.index0 }}" style="margin-bottom: 0;">
-                                    <button type="submit" class="btn btn-small btn-danger">Удалить</button>
+                                    <button type="submit" class="btn-dropdown btn-danger">Удалить</button>
                                 </form>
                                 <form method="post" action="/replace_audio/{{ loop.index0 }}"
                                     enctype="multipart/form-data" style="margin-bottom: 0;">
                                     <input type="file" name="audio_file" accept=".mp3,.wav,.ogg" required>
-                                    <button type="submit" class="btn btn-small">Заменить аудио</button>
+                                    <button type="submit" class="btn-small">Заменить аудио</button>
                                 </form>
                                 <form method="post" action="/edit_time/{{ loop.index0 }}" style="margin-bottom: 0;">
-                                    <input type="time" name="lesson_start" value="{{ time_slot['lesson_start'] }}"
-                                        required>
-                                    <input type="time" name="lesson_end" value="{{ time_slot['lesson_end'] }}" required>
-                                    <button type="submit" class="btn btn-small">Заменить время</button>
+                                    <input type="time" class="btn-small" name="lesson_start" value="{{ time_slot['lesson_start'] }}" required>
+                                    <input type="time" class="btn-small" name="lesson_end" value="{{ time_slot['lesson_end'] }}" required>
+                                    <button type="submit" class="btn-small">Заменить время</button>
                                 </form>
                                 <form method="post" action="/move_up/{{ loop.index0 }}" style="display: inline;">
-                                    <button type="submit" class="btn btn-small">&#8679; Вверх</button>
+                                    <button type="submit" class="btn-small">&#8679; Вверх</button>
                                 </form>
                                 <form method="post" action="/move_down/{{ loop.index0 }}" style="display: inline;">
-                                    <button type="submit" class="btn btn-small">&#8681; Вниз</button>
+                                    <button type="submit" class=" btn-small">&#8681; Вниз</button>
                                 </form>
                             </div>
                         </div>
@@ -62,10 +61,10 @@
         </table>
         <h2>Добавить время звонка</h2>
         <form method="post" enctype="multipart/form-data">
-            <input type="time" name="lesson_start" required> Начало урока
-            <input type="time" name="lesson_end" required> Конец урока
+            <input type="time" class="btn-small" name="lesson_start" required> Начало урока
+            <input type="time" class="btn-small" name="lesson_end" required> Конец урока
             <input type="file" name="audio_file" accept=".mp3,.wav,.ogg" required> Аудио файл
-            <button type="submit" class="btn">Добавить и загрузить</button>
+            <button type="submit" class="btn-small">Добавить и загрузить</button>
         </form>
     </div>
     <script>
@@ -73,7 +72,7 @@
             const now = new Date();
             document.getElementById('clock').innerHTML = now.toLocaleTimeString();
         }
-        setInterval(updateClock, 1000);
+        setInterval(updateClock, 500);
     </script>
 </body>
 
