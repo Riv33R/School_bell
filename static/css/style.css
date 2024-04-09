@@ -9,6 +9,17 @@ html {
     color: #333;
 }
 
+.clock {
+    padding: 10px 20px;
+    font-size: 26px;
+    text-decoration: none;
+    color: #ffffff;
+    background-color: #3498db;
+    border: none;
+    border-radius: 5px;
+    margin: 5px;
+}
+
 .container {
     max-width: 960px;
     margin: 20px auto;

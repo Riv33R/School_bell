@@ -133,20 +133,21 @@ def play_scheduled_audio():
     while True:
         now = datetime.now().strftime('%H:%M')
         schedule = load_schedule()
+        pygame.mixer.init()
         for slot in schedule:
             if now == slot['lesson_start']:
                 audio_file_path = os.path.join(app.config['UPLOAD_FOLDER'], slot['audio_file_path'])
                 pygame.mixer.music.load(audio_file_path)
                 pygame.mixer.music.play()
                 while datetime.now().strftime('%H:%M') != slot['lesson_end']:
-                    time.sleep(120)  
+                    time.sleep(65)
             elif now == slot['lesson_end']:
                 audio_file_path = os.path.join(app.config['UPLOAD_FOLDER'], slot['audio_file_path'])
                 pygame.mixer.music.load(audio_file_path)
                 pygame.mixer.music.play()
                 # Ждем до окончания занятия, предполагая, что аудио не должно быть прервано
                 while datetime.now().strftime('%H:%M') != slot['lesson_start']:
-                    time.sleep(120)  
+                    time.sleep(65) 
         time.sleep(1)  # Проверяем расписание каждую минуту
 
 from threading import Thread
