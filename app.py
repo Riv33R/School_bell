@@ -3,7 +3,7 @@ from flask import Flask, render_template, request, redirect, url_for, flash
 from werkzeug.utils import secure_filename
 import os
 import json
-from datetime import datetime, timedelta
+from datetime import datetime
 import pygame
 
 pygame.mixer.init()
@@ -138,15 +138,16 @@ def play_scheduled_audio():
                 audio_file_path = os.path.join(app.config['UPLOAD_FOLDER'], slot['audio_file_path'])
                 pygame.mixer.music.load(audio_file_path)
                 pygame.mixer.music.play()
-                time.sleep(120)  # Проверяем каждые 10 секунд
+                while datetime.now().strftime('%H:%M') != slot['lesson_end']:
+                    time.sleep(120)  
             elif now == slot['lesson_end']:
                 audio_file_path = os.path.join(app.config['UPLOAD_FOLDER'], slot['audio_file_path'])
                 pygame.mixer.music.load(audio_file_path)
                 pygame.mixer.music.play()
                 # Ждем до окончания занятия, предполагая, что аудио не должно быть прервано
-                while datetime.now().strftime('%H:%M') != slot['lesson_end']:
-                    time.sleep(120)  # Проверяем каждые 10 секунд
-        time.sleep(2)  # Проверяем расписание каждую минуту
+                while datetime.now().strftime('%H:%M') != slot['lesson_start']:
+                    time.sleep(120)  
+        time.sleep(1)  # Проверяем расписание каждую минуту
 
 from threading import Thread
 
