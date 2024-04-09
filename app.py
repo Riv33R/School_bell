@@ -1,7 +1,13 @@
+import time
 from flask import Flask, render_template, request, redirect, url_for, flash
 from werkzeug.utils import secure_filename
 import os
 import json
+from datetime import datetime, timedelta
+import pygame
+
+pygame.mixer.init()
+
 
 app = Flask(__name__)
 app.config['UPLOAD_FOLDER'] = 'static/audio'  # Путь для сохранения аудио файлов
@@ -123,6 +129,28 @@ def move_down(index):
         flash('Ошибка перемещения: некорректный индекс.', 'error')
     return redirect(url_for('index'))  # Используем маршрут 'index' для перенаправления
 
+def play_scheduled_audio():
+    while True:
+        now = datetime.now().strftime('%H:%M')
+        schedule = load_schedule()
+        for slot in schedule:
+            if now == slot['lesson_start']:
+                audio_file_path = os.path.join(app.config['UPLOAD_FOLDER'], slot['audio_file_path'])
+                pygame.mixer.music.load(audio_file_path)
+                pygame.mixer.music.play()
+                time.sleep(120)  # Проверяем каждые 10 секунд
+            elif now == slot['lesson_end']:
+                audio_file_path = os.path.join(app.config['UPLOAD_FOLDER'], slot['audio_file_path'])
+                pygame.mixer.music.load(audio_file_path)
+                pygame.mixer.music.play()
+                # Ждем до окончания занятия, предполагая, что аудио не должно быть прервано
+                while datetime.now().strftime('%H:%M') != slot['lesson_end']:
+                    time.sleep(120)  # Проверяем каждые 10 секунд
+        time.sleep(2)  # Проверяем расписание каждую минуту
+
+from threading import Thread
 
 if __name__ == '__main__':
+    audio_thread = Thread(target=play_scheduled_audio)
+    audio_thread.start()
     app.run(debug=True)

@@ -31,7 +31,7 @@
                     <td>{{ time_slot.get('audio_file_path', 'Не указан') }}</td>
                     <td>
                         <div class="dropdown">
-                            <button class="dropbtn">Меню</button>
+                            <button class="dropbtn btn-small">Меню</button>
                             <div class="dropdown-content">
                                 <form method="post" action="/delete/{{ loop.index0 }}" style="margin-bottom: 0;">
                                     <button type="submit" class="btn-dropdown btn-danger">Удалить</button>
@@ -75,7 +75,7 @@
                     </th>
                     <th>
                         <div>Аудио файл</div>
-                        <input type="file" name="audio_file" accept=".mp3,.wav,.ogg" required>
+                        <input class="btn-small" type="file" name="audio_file" accept=".mp3,.wav,.ogg" required>
                         <button type="submit" class="btn-small">Добавить и загрузить</button>
                         </form>
                     </th>
