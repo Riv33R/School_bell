@@ -6,7 +6,7 @@ import json
 from datetime import datetime
 import pygame
 
-pygame.mixer.init()
+#pygame.mixer.init()
 
 
 app = Flask(__name__)
@@ -14,6 +14,8 @@ app.config['UPLOAD_FOLDER'] = 'static/audio'  # Путь для сохранен
 app.config['ALLOWED_EXTENSIONS'] = {'mp3', 'wav', 'ogg'}
 app.secret_key = 'your_secret_key'
 schedule_file = 'schedule.json'  # Путь к файлу с расписанием
+
+played_slots = {}
 
 def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in app.config['ALLOWED_EXTENSIONS']
@@ -28,6 +30,47 @@ def load_schedule():
             return json.load(f)
     except FileNotFoundError:
         return []
+    
+import pygame
+from datetime import datetime
+import time
+import os
+
+def play_audio_once(file_path):
+    """Воспроизведение аудиофайла с ожиданием его окончания."""
+    pygame.mixer.music.load(file_path)
+    pygame.mixer.music.play()
+    while pygame.mixer.music.get_busy():  # Ожидание окончания воспроизведения
+        time.sleep(1)
+    pygame.mixer.music.stop()
+    pygame.mixer.music.unload()
+
+def play_scheduled_audio():
+    pygame.mixer.init()
+    while True:
+        now = datetime.now().strftime('%H:%M')
+        schedule = load_schedule()
+        for index, slot in enumerate(schedule):
+            lesson_start = slot['lesson_start']
+            lesson_end = slot['lesson_end']
+            audio_file_path = os.path.join(app.config['UPLOAD_FOLDER'], slot['audio_file_path'])
+
+            # Воспроизведение в начале урока
+            if now == lesson_start and not played_slots.get(index, {}).get('start', False):
+                play_audio_once(audio_file_path)
+                if index not in played_slots:
+                    played_slots[index] = {}
+                played_slots[index]['start'] = True  # Отмечаем, что воспроизведение на начало занятия выполнено
+
+            # Воспроизведение в конце урока
+            elif now == lesson_end and not played_slots.get(index, {}).get('end', False):
+                play_audio_once(audio_file_path)
+                if index not in played_slots:
+                    played_slots[index] = {}
+                played_slots[index]['end'] = True  # Отмечаем, что воспроизведение на окончание занятия выполнено
+
+        time.sleep(2)  # Периодическая проверка расписания
+
 
 @app.route('/')
 def index():
@@ -128,27 +171,6 @@ def move_down(index):
     else:
         flash('Ошибка перемещения: некорректный индекс.', 'error')
     return redirect(url_for('index'))  # Используем маршрут 'index' для перенаправления
-
-def play_scheduled_audio():
-    while True:
-        now = datetime.now().strftime('%H:%M')
-        schedule = load_schedule()
-        pygame.mixer.init()
-        for slot in schedule:
-            if now == slot['lesson_start']:
-                audio_file_path = os.path.join(app.config['UPLOAD_FOLDER'], slot['audio_file_path'])
-                pygame.mixer.music.load(audio_file_path)
-                pygame.mixer.music.play()
-                while datetime.now().strftime('%H:%M') != slot['lesson_end']:
-                    time.sleep(65)
-            elif now == slot['lesson_end']:
-                audio_file_path = os.path.join(app.config['UPLOAD_FOLDER'], slot['audio_file_path'])
-                pygame.mixer.music.load(audio_file_path)
-                pygame.mixer.music.play()
-                # Ждем до окончания занятия, предполагая, что аудио не должно быть прервано
-                while datetime.now().strftime('%H:%M') != slot['lesson_start']:
-                    time.sleep(65) 
-        time.sleep(1)  # Проверяем расписание каждую минуту
 
 from threading import Thread
 
