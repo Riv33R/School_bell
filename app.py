@@ -177,4 +177,4 @@ from threading import Thread
 if __name__ == '__main__':
     audio_thread = Thread(target=play_scheduled_audio)
     audio_thread.start()
-    app.run(debug=True)
+    app.run(debug=False)
