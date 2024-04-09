@@ -6,8 +6,6 @@ import json
 from datetime import datetime
 import pygame
 
-#pygame.mixer.init()
-
 
 app = Flask(__name__)
 app.config['UPLOAD_FOLDER'] = 'static/audio'  # Путь для сохранения аудио файлов
@@ -16,6 +14,12 @@ app.secret_key = 'your_secret_key'
 schedule_file = 'schedule.json'  # Путь к файлу с расписанием
 
 played_slots = {}
+
+UPLOAD_FOLDER = 'static/audio'
+
+# Создание папок для загрузки файлов, если они еще не существуют
+if not os.path.exists(UPLOAD_FOLDER):
+    os.makedirs(UPLOAD_FOLDER)
 
 def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in app.config['ALLOWED_EXTENSIONS']
