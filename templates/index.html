@@ -62,12 +62,25 @@
             </tbody>
         </table>
         <h2>Добавить время звонка</h2>
-        <form method="post" enctype="multipart/form-data">
-            <input type="time" class="btn-small" name="lesson_start" required> Начало урока
-            <input type="time" class="btn-small" name="lesson_end" required> Конец урока
-            <input type="file" name="audio_file" accept=".mp3,.wav,.ogg" required> Аудио файл
-            <button type="submit" class="btn-small">Добавить и загрузить</button>
-        </form>
+        <form method="post" action="/add" enctype="multipart/form-data">
+            <table class="container">
+                <thead>
+                    <th>
+                        <div>Начало урока</div>
+                        <input type="time" class="btn-small" name="lesson_start" required>
+                    </th>
+                    <th>
+                        <div>Конец урока</div>
+                        <input type="time" class="btn-small" name="lesson_end" required>
+                    </th>
+                    <th>
+                        <div>Аудио файл</div>
+                        <input type="file" name="audio_file" accept=".mp3,.wav,.ogg" required>
+                        <button type="submit" class="btn-small">Добавить и загрузить</button>
+                        </form>
+                    </th>
+                </thead>
+            </table>
     </div>
     <script>
         function updateClock() {

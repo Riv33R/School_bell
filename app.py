@@ -38,14 +38,20 @@ def add_time_slot():
 
         if audio_file and allowed_file(audio_file.filename):
             filename = secure_filename(audio_file.filename) # type: ignore
-            audio_file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
-            schedule.append({'lesson_start': lesson_start, 'lesson_end': lesson_end, 'audio_file_path': filename})
+            audio_file_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+            audio_file.save(audio_file_path)
+            schedule.append({
+                'lesson_start': lesson_start,
+                'lesson_end': lesson_end,
+                'audio_file_path': filename
+            })
             save_schedule(schedule)
             flash('Новый звонок успешно добавлен.', 'success')
         else:
             flash('Ошибка добавления: неверный формат файла.', 'error')
 
     return redirect(url_for('index'))
+
 
 @app.route('/delete/<int:index>', methods=['POST'])
 def delete_time_slot(index):
@@ -94,6 +100,29 @@ def replace_audio(index):
             flash('Ошибка замены аудио: неверный формат файла.', 'error')
 
     return redirect(url_for('index'))
+
+@app.route('/move_up/<int:index>', methods=['POST'])
+def move_up(index):
+    schedule = load_schedule()  # Загружаем расписание
+    if index > 0 and index < len(schedule):  # Убедимся, что индекс в допустимом диапазоне
+        # Меняем элементы местами
+        schedule[index], schedule[index - 1] = schedule[index - 1], schedule[index]
+        save_schedule(schedule)  # Сохраняем изменённое расписание
+    else:
+        flash('Ошибка перемещения: некорректный индекс.', 'error')
+    return redirect(url_for('index'))  # Используем маршрут 'index' для перенаправления
+
+@app.route('/move_down/<int:index>', methods=['POST'])
+def move_down(index):
+    schedule = load_schedule()  # Загружаем расписание
+    if index >= 0 and index < len(schedule) - 1:  # Убедимся, что индекс в допустимом диапазоне
+        # Меняем элементы местами
+        schedule[index], schedule[index + 1] = schedule[index + 1], schedule[index]
+        save_schedule(schedule)  # Сохраняем изменённое расписание
+    else:
+        flash('Ошибка перемещения: некорректный индекс.', 'error')
+    return redirect(url_for('index'))  # Используем маршрут 'index' для перенаправления
+
 
 if __name__ == '__main__':
     app.run(debug=True)
