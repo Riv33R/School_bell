@@ -30,11 +30,6 @@ def load_schedule():
             return json.load(f)
     except FileNotFoundError:
         return []
-    
-import pygame
-from datetime import datetime
-import time
-import os
 
 def play_audio_once(file_path):
     """Воспроизведение аудиофайла с ожиданием его окончания."""
